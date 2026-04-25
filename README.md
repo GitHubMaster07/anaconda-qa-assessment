@@ -1,17 +1,6 @@
-# anaconda-qa-assessment
-QA Automation Engineer skills demonstration – Playwright UI challenge
 
-# Anaconda QA Assessment – Sergei Volodin
 
-## Setup
-
-```bash
-npm install
-npx playwright install
-npm test
-
-cat > README.md << 'EOF'
-# 🎯 Anaconda QA Assessment - Playwright Enterprise Solution
+# 🎯 Anaconda QA Assessment 
 
 [![Playwright Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/smoke.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/smoke.yml)
 [![Nightly Regression](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/nightly.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/nightly.yml)

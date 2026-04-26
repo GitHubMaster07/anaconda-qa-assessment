@@ -16,7 +16,8 @@ export class Challenge1Page extends BasePage {
   };
 
   async navigateToChallenge(): Promise<void> {
-    await this.page.locator('a[href="/challenge1.html"]').click();
+    // Using role-based locator instead of href attribute - more resilient
+    await this.page.getByRole('link', { name: 'Challenge 1' }).click();
   }
 
   async login(email: string, password: string): Promise<void> {
@@ -36,7 +37,6 @@ export class Challenge1Page extends BasePage {
   }
 
   async waitForFormReset(): Promise<void> {
-    // Wait for success message to disappear (animation ends)
     await this.page.waitForSelector('#successMessage[data-test-ready="true"]', { state: 'detached' });
   }
 }

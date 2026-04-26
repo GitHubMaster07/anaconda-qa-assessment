@@ -22,7 +22,6 @@ export class Challenge2Page extends BasePage {
     await this.page.locator('a[href="/challenge2.html"]').click();
   }
 
-  // For positive test - waits for successful login
   async loginSuccess(email: string, password: string): Promise<void> {
     await this.page.fill(this.selectors.emailInput, email);
     await this.page.fill(this.selectors.passwordInput, password);
@@ -32,7 +31,6 @@ export class Challenge2Page extends BasePage {
     await this.page.waitForSelector('#menuButton[data-initialized="true"]', { timeout: 5000 });
   }
 
-  // For negative test - just submits, doesn't wait for dashboard
   async loginFail(email: string, password: string): Promise<void> {
     await this.page.fill(this.selectors.emailInput, email);
     await this.page.fill(this.selectors.passwordInput, password);

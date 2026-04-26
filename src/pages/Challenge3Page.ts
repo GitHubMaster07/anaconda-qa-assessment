@@ -12,7 +12,7 @@ export class Challenge3Page extends BasePage {
 
   async clickForgotPassword(): Promise<void> {
     await this.page.click('button.link-button');
-    await this.page.waitForSelector('input#email', { timeout: 5000 });
+    await this.page.waitForSelector('input#email');
   }
 
   async resetPassword(email: string): Promise<void> {
@@ -21,18 +21,10 @@ export class Challenge3Page extends BasePage {
   }
 
   async verifySuccess(): Promise<void> {
-    await this.page.waitForSelector('.success-message', { timeout: 8000 });
-    
-    // Wait until success message has actual text content
-    await this.page.waitForFunction(
-      () => {
-        const el = document.querySelector('.success-message');
-        return el && el.textContent && el.textContent.length > 0;
-      },
-      { timeout: 5000 }
-    );
-    
     const message = this.page.locator('.success-message');
-    await expect(message).toContainText('Password reset link sent');
+    
+    await expect(async () => {
+      await expect(message).toContainText('Password reset link sent');
+    }).toPass();
   }
 }

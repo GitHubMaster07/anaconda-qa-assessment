@@ -33,8 +33,8 @@ test.describe('Challenge 2 - Full Regression @regression', () => {
       // Clean up session state between cycles
       await challengePage.clearSession();
       
-      // Wait for login form to be ready
-      await this.page.waitForSelector('#loginForm', { state: 'visible' });
+      // Wait for login form to be ready - use challengePage.page
+      await challengePage.page.waitForSelector('#loginForm', { state: 'visible' });
     }
   });
 

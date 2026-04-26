@@ -227,22 +227,21 @@
       let isSubmitting = false;
 
       function showSuccessMessage() {
-        // Get current values
         const emailValue = document.getElementById('email').value;
         const passwordValue = document.getElementById('password').value;
 
-        // Display the values
         emailDisplay.textContent = `Email: ${emailValue}`;
         passwordDisplay.textContent = `Password: ${passwordValue}`;
-
-        // Show the message
         successMessage.classList.add('show');
+        
+        // Signal to test that animation is complete and data is ready
+        successMessage.setAttribute('data-test-ready', 'true');
 
         setTimeout(() => {
           successMessage.classList.remove('show');
+          successMessage.removeAttribute('data-test-ready');
           form.reset();
 
-          // Ensure form is immediately usable after reset
           const inputs = form.querySelectorAll('input');
           inputs.forEach(input => {
             input.style.visibility = 'visible';
@@ -271,7 +270,6 @@
         submitBtn.classList.add('loading');
 
         try {
-          // Random delay between 1-3 seconds
           const delay = Math.random() * 2000 + 1000;
           await new Promise(resolve => setTimeout(resolve, delay));
 
@@ -285,7 +283,6 @@
         }
       });
 
-      // Remove shake animation when starting new input
       document.querySelectorAll('.input-field').forEach(input => {
         input.addEventListener('input', () => {
           input.parentElement.classList.remove('shake');

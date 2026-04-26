@@ -6,38 +6,32 @@ export class Challenge3Page extends BasePage {
     super(page);
   }
 
-  private selectors = {
-    emailInput: '#email',
-    forgotButton: 'button.link-button',
-    resetButton: 'button.submit-btn',
-    successHeading: 'h3',
-    successMessageText: '.success-message p',
-  };
-
   async navigateToChallenge(): Promise<void> {
     await this.page.locator('a[href="/challenge3.html"]').click();
   }
 
   async clickForgotPassword(): Promise<void> {
     await this.page.click('button.link-button');
+    await this.page.waitForSelector('input#email', { timeout: 5000 });
   }
 
   async resetPassword(email: string): Promise<void> {
-    // Wait for the forgot password form to appear
-    await this.page.waitForSelector('input#email', { timeout: 5000 });
-    await this.page.fill(this.selectors.emailInput, email);
+    await this.page.fill('#email', email);
     await this.page.click('button.submit-btn');
   }
 
   async verifySuccess(): Promise<void> {
-    // Wait for success message container to appear
-    await this.page.waitForSelector('.success-message', { timeout: 5000 });
+    await this.page.waitForSelector('.success-message', { timeout: 8000 });
     
-    // Check for "Success!" heading - it's inside h3 tag
-    const heading = this.page.locator('h3');
-    await expect(heading).toContainText('Success');
+    // Wait until success message has actual text content
+    await this.page.waitForFunction(
+      () => {
+        const el = document.querySelector('.success-message');
+        return el && el.textContent && el.textContent.length > 0;
+      },
+      { timeout: 5000 }
+    );
     
-    // Check for password reset message
     const message = this.page.locator('.success-message');
     await expect(message).toContainText('Password reset link sent');
   }

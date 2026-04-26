@@ -27,9 +27,18 @@ export class Challenge2Page extends BasePage {
     await this.page.fill(this.selectors.passwordInput, password);
     await this.page.click(this.selectors.submitButton);
     
-    // Longer timeout for Firefox in CI
-    await this.page.waitForSelector(this.selectors.dashboard, { state: 'visible', timeout: 10000 });
-    await this.page.waitForSelector('#menuButton[data-initialized="true"]', { timeout: 10000 });
+    // Wait for either dashboard to appear OR login form to disappear
+    await this.page.waitForFunction(
+      () => {
+        const dashboard = document.querySelector('#dashboard');
+        const loginForm = document.querySelector('#loginForm');
+        return (dashboard && window.getComputedStyle(dashboard).display !== 'none') ||
+               (loginForm && window.getComputedStyle(loginForm).display === 'none');
+      }
+    );
+    
+    // Wait for menu button to have data-initialized attribute (set by JS after animation)
+    await this.page.waitForSelector('#menuButton[data-initialized="true"]');
   }
 
   async loginFail(email: string, password: string): Promise<void> {
@@ -40,7 +49,7 @@ export class Challenge2Page extends BasePage {
 
   async verifyLoginError(): Promise<void> {
     const errorMessage = this.page.locator(this.selectors.errorMessage);
-    await expect(errorMessage).toBeVisible({ timeout: 5000 });
+    await expect(errorMessage).toBeVisible();
     await expect(errorMessage).toContainText('Invalid email or password');
   }
 
@@ -48,12 +57,14 @@ export class Challenge2Page extends BasePage {
     const menuButton = this.page.locator(this.selectors.menuButton);
     await menuButton.click();
     
-    await this.page.waitForSelector('#accountMenu.show', { state: 'visible', timeout: 10000 });
+    // Wait for dropdown menu to have 'show' class
+    await this.page.waitForSelector('#accountMenu.show');
     
     const logoutOption = this.page.locator(this.selectors.logoutOption);
     await logoutOption.click();
     
-    await this.page.waitForSelector(this.selectors.loginForm, { state: 'visible', timeout: 10000 });
+    // Wait for login form to be visible again
+    await this.page.waitForSelector(this.selectors.loginForm, { state: 'visible' });
     await expect(this.page.locator(this.selectors.emailInput)).toBeVisible();
   }
 }

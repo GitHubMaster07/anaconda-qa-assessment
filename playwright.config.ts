@@ -25,10 +25,11 @@ export default defineConfig({
     },
   ],
 
-  webServer: {
+  // Only start webServer locally, NOT in CI (CI starts it manually in workflow)
+  webServer: process.env.CI ? undefined : {
     command: 'npm run start',
     port: 3000,
     timeout: 120000,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
   },
 });

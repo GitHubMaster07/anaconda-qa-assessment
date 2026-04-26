@@ -17,12 +17,11 @@ export class Challenge4Page extends BasePage {
   };
 
   async navigateToChallenge(): Promise<void> {
-    await this.page.locator('a[href="/challenge4.html"]').click();
+    await this.page.getByRole('link', { name: 'Challenge 4' }).click();
     
     // App sets window.isAppReady after jQuery loads
     await this.page.waitForFunction(
-      () => (window as any).isAppReady === true,
-      { timeout: 10000, polling: 500 }
+      () => (window as any).isAppReady === true
     );
   }
 
@@ -30,7 +29,7 @@ export class Challenge4Page extends BasePage {
     await this.page.fill(this.selectors.emailInput, email);
     await this.page.fill(this.selectors.passwordInput, password);
     await this.page.click(this.selectors.submitButton);
-    await this.page.waitForSelector(this.selectors.userProfile, { state: 'visible', timeout: 5000 });
+    await this.page.waitForSelector(this.selectors.userProfile, { state: 'visible' });
   }
 
   async logout(): Promise<void> {
@@ -40,7 +39,7 @@ export class Challenge4Page extends BasePage {
     const logoutOption = this.page.locator(this.selectors.logoutOption);
     await logoutOption.click();
     
-    await this.page.waitForSelector(this.selectors.loginForm, { state: 'visible', timeout: 5000 });
+    await this.page.waitForSelector(this.selectors.loginForm, { state: 'visible' });
     await expect(this.page.locator(this.selectors.emailInput)).toBeVisible();
   }
 }

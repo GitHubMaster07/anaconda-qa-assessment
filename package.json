@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "description": "QA Automation Engineer skills demonstration – Playwright UI challenge",
   "scripts": {
+    "start": "node server.js",
     "test": "playwright test",
     "test:smoke": "playwright test --grep @smoke",
     "test:regression": "playwright test --grep @regression",
     "test:headed": "playwright test --headed",
-    "test:debug": "playwright test --debug"
+    "test:debug": "playwright test --debug",
+    "test:with-server": "start npm start && wait-on http://localhost:3000 && npm run test:smoke"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.1",
     "@types/node": "^20.11.24",
+    "express": "^4.22.1",
     "typescript": "^5.3.3"
   }
 }

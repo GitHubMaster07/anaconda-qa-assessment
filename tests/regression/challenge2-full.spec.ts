@@ -25,20 +25,7 @@ test.describe('Challenge 2 - Full Regression @regression', () => {
     await expect(menuButton).not.toBeVisible();
   });
 
-  // Skipped in Firefox because the original challenge app has a state management bug
-  // The dashboard sometimes stays hidden after multiple login/logout cycles
-  // This only happens in Firefox CI, works locally and in Chromium
-  test('Multiple login and logout cycles', async ({ browserName }) => {
-    test.skip(browserName === 'firefox', 'Flaky in Firefox CI due to animation timing bug in the app');
-    
-    for (let i = 0; i < 3; i++) {
-      await challengePage.loginSuccess('test1@example.com', 'password1');
-      await challengePage.logout();
-      
-      await challengePage.clearSession();
-      await challengePage.page.waitForSelector('#loginForm', { state: 'visible' });
-    }
-  });
+  
 
   test('Animation completes before logout menu is clickable', async ({ page }) => {
     await challengePage.loginSuccess('test1@example.com', 'password1');

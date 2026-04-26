@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <title>Challenge 2 - Menu Animation</title>
     <style>
-      /* All previous styles remain same until menu-button */
       body {
         font-family: Arial, sans-serif;
         display: flex;
@@ -115,6 +114,16 @@
         transform: translateX(0);
       }
 
+      .error-message {
+        color: #ff4444;
+        background: #ffeeee;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+        display: none;
+        text-align: center;
+      }
+
       .dashboard {
         text-align: center;
         position: relative;
@@ -184,6 +193,8 @@
             <label class="floating-label" for="password">Password</label>
           </div>
 
+          <div id="errorMessage" class="error-message">Invalid email or password</div>
+
           <button type="submit" class="submit-btn" id="submitButton">Sign In</button>
         </form>
       </div>
@@ -197,7 +208,7 @@
             <div class="menu-item" id="profileOption">Profile</div>
             <div class="menu-item" id="settingsOption">Settings</div>
             <div class="menu-item" id="preferencesOption">Preferences</div>
-            <div class="menu-item" id="logoutOption" onclick="logout()">Logout</div>
+            <div class="menu-item" id="logoutOption">Logout</div>
           </div>
         </div>
       </div>
@@ -210,12 +221,17 @@
       const dashboard = document.getElementById('dashboard');
       const menuButton = document.getElementById('menuButton');
       const accountMenu = document.getElementById('accountMenu');
+      const errorMessage = document.getElementById('errorMessage');
       let isMenuOpen = false;
       let menuClickable = false;
 
+      // Valid credentials for testing
+      const VALID_EMAIL = 'test1@example.com';
+      const VALID_PASSWORD = 'password1';
+
       menuButton.addEventListener('click', () => {
         if (!menuClickable) {
-          return; // Ignore clicks during delay
+          return;
         }
         toggleMenu();
       });
@@ -223,6 +239,7 @@
       function toggleMenu() {
         if (!isMenuOpen) {
           accountMenu.classList.add('show');
+          menuButton.setAttribute('data-menu-open', 'true');
           isMenuOpen = true;
         } else {
           closeMenu();
@@ -231,26 +248,47 @@
 
       function closeMenu() {
         accountMenu.classList.remove('show');
+        menuButton.removeAttribute('data-menu-open');
         isMenuOpen = false;
+      }
+
+      // Signal to test that menu is ready
+      function setMenuReady() {
+        menuClickable = true;
+        menuButton.setAttribute('data-initialized', 'true');
       }
 
       form.addEventListener('submit', async e => {
         e.preventDefault();
+        
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        // Validate credentials
+        if (email !== VALID_EMAIL || password !== VALID_PASSWORD) {
+          errorMessage.style.display = 'block';
+          // Hide error after 2 seconds
+          setTimeout(() => {
+            errorMessage.style.display = 'none';
+          }, 2000);
+          return;
+        }
+
+        errorMessage.style.display = 'none';
         submitBtn.disabled = true;
 
         setTimeout(() => {
           loginForm.style.display = 'none';
           dashboard.style.display = 'block';
-          document.getElementById('userEmail').textContent = `Logged in as: ${document.getElementById('email').value}`;
+          document.getElementById('userEmail').textContent = `Logged in as: ${email}`;
 
-          // Menu is visible but not functional yet
           menuButton.style.display = 'inline-flex';
           menuClickable = false;
 
-          // Delay actual functionality
           setTimeout(() => {
-            menuClickable = true;
-            menuButton.setAttribute('data-initialized', 'true'); // Add this line
+            setMenuReady();
           }, 1000);
         }, 1000);
       });
@@ -262,6 +300,7 @@
         loginForm.style.display = 'block';
         closeMenu();
         menuClickable = false;
+        menuButton.removeAttribute('data-initialized');
 
         // Reset button animation
         submitBtn.style.animation = 'none';
@@ -269,8 +308,11 @@
         submitBtn.style.animation = null;
       }
 
+      // Attach logout handler
+      document.getElementById('logoutOption').addEventListener('click', logout);
+
       document.addEventListener('click', e => {
-        if (!e.target.matches('.menu-button') && !e.target.closest('.dropdown-menu') && isMenuOpen) {
+        if (!e.target.closest('.menu-button') && !e.target.closest('.dropdown-menu') && isMenuOpen) {
           closeMenu();
         }
       });

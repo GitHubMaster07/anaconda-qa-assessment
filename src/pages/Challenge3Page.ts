@@ -8,7 +8,10 @@ export class Challenge3Page extends BasePage {
 
   private selectors = {
     emailInput: '#email',
-    mainContent: '#mainContent',
+    forgotButton: 'button.link-button',
+    resetButton: 'button.submit-btn',
+    successHeading: 'h3',
+    successMessageText: '.success-message p',
   };
 
   async navigateToChallenge(): Promise<void> {
@@ -16,19 +19,26 @@ export class Challenge3Page extends BasePage {
   }
 
   async clickForgotPassword(): Promise<void> {
-    // Using regex for case-insensitive matching (modal button text may vary)
-    await this.page.getByRole('button', { name: /forgot password/i }).click();
+    await this.page.click('button.link-button');
   }
 
   async resetPassword(email: string): Promise<void> {
+    // Wait for the forgot password form to appear
+    await this.page.waitForSelector('input#email', { timeout: 5000 });
     await this.page.fill(this.selectors.emailInput, email);
-    await this.page.getByRole('button', { name: /reset password/i }).click();
+    await this.page.click('button.submit-btn');
   }
 
   async verifySuccess(): Promise<void> {
-    // Case-insensitive heading check
-    await expect(this.page.getByRole('heading', { name: /success/i })).toBeVisible();
-    // Flexible text matching for the reset message
-    await expect(this.page.locator(this.selectors.mainContent)).toContainText(/password reset link sent/i);
+    // Wait for success message container to appear
+    await this.page.waitForSelector('.success-message', { timeout: 5000 });
+    
+    // Check for "Success!" heading - it's inside h3 tag
+    const heading = this.page.locator('h3');
+    await expect(heading).toContainText('Success');
+    
+    // Check for password reset message
+    const message = this.page.locator('.success-message');
+    await expect(message).toContainText('Password reset link sent');
   }
 }

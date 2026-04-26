@@ -11,6 +11,8 @@ export class Challenge1Page extends BasePage {
     passwordInput: '#password',
     submitButton: '#submitButton',
     successMessage: '#successMessage',
+    emailDisplay: '#emailDisplay',
+    passwordDisplay: '#passwordDisplay',
   };
 
   async navigateToChallenge(): Promise<void> {
@@ -23,11 +25,16 @@ export class Challenge1Page extends BasePage {
     await this.page.click(this.selectors.submitButton);
   }
 
-  // Verifies success message contains the submitted email and password
   async verifyLoginSuccess(email: string, password: string): Promise<void> {
+    // Wait for success message to become visible (animation takes 2 seconds)
     const message = this.page.locator(this.selectors.successMessage);
-    await expect(message).toContainText('Successfully submitted!');
-    await expect(message).toContainText(`Email: ${email}`);
-    await expect(message).toContainText(`Password: ${password}`);
+    await message.waitFor({ state: 'visible', timeout: 5000 });
+    
+    // Check email and password display elements
+    const emailDisplay = this.page.locator(this.selectors.emailDisplay);
+    const passwordDisplay = this.page.locator(this.selectors.passwordDisplay);
+    
+    await expect(emailDisplay).toHaveText(`Email: ${email}`);
+    await expect(passwordDisplay).toHaveText(`Password: ${password}`);
   }
 }

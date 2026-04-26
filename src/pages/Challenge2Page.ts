@@ -13,6 +13,8 @@ export class Challenge2Page extends BasePage {
     submitButton: '#submitButton',
     menuButton: '#menuButton',
     logoutOption: '#logoutOption',
+    accountMenu: '#accountMenu',
+    dashboard: '#dashboard',
   };
 
   async navigateToChallenge(): Promise<void> {
@@ -23,19 +25,29 @@ export class Challenge2Page extends BasePage {
     await this.page.fill(this.selectors.emailInput, email);
     await this.page.fill(this.selectors.passwordInput, password);
     await this.page.click(this.selectors.submitButton);
+    
+    // Wait for dashboard to appear (login animation takes 1 second)
+    await this.page.waitForSelector(this.selectors.dashboard, { state: 'visible', timeout: 5000 });
+    
+    // Wait for menu button to be ready (data-initialized attribute appears after 1 second)
+    await this.page.waitForSelector('#menuButton[data-initialized="true"]', { timeout: 5000 });
   }
 
-  // Handles animated menu - waits for button to be clickable before clicking
   async logout(): Promise<void> {
+    // Click menu button to open dropdown
     const menuButton = this.page.locator(this.selectors.menuButton);
-    await WaitHelpers.waitForClickable(menuButton);
     await menuButton.click();
-
+    
+    // Wait for dropdown menu to become visible
+    const accountMenu = this.page.locator(this.selectors.accountMenu);
+    await accountMenu.waitFor({ state: 'visible', timeout: 3000 });
+    
+    // Click logout option
     const logoutOption = this.page.locator(this.selectors.logoutOption);
-    await WaitHelpers.waitForClickable(logoutOption);
     await logoutOption.click();
-
-    // Verify logout worked - login form should be visible again
+    
+    // Verify login form is visible again
+    await this.page.waitForSelector('#loginForm', { state: 'visible', timeout: 5000 });
     await expect(this.page.locator(this.selectors.emailInput)).toBeVisible();
   }
 }

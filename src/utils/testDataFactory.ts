@@ -1,13 +1,16 @@
+import { randomUUID } from 'crypto';
+
 export class TestDataFactory {
-  // Generate unique email for parallel test execution
+  // Generate unique email using UUID - guaranteed unique
   static generateUniqueEmail(): string {
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(2, 8);
-    return `test-${timestamp}-${random}@example.com`;
+    const uuid = randomUUID().substring(0, 8);
+    return `test-${uuid}@example.com`;
   }
 
+  // Generate password using UUID
   static generatePassword(): string {
-    return `Pass${Math.random().toString(36).substring(2, 12)}!`;
+    const uuid = randomUUID().substring(0, 10);
+    return `Pass${uuid}!`;
   }
 
   static generateTestUser() {
@@ -17,7 +20,7 @@ export class TestDataFactory {
     };
   }
 
-  // Create multiple users for Challenge 1 (3 login attempts)
+  // Create multiple users
   static generateMultipleUsers(count: number) {
     return Array.from({ length: count }, () => this.generateTestUser());
   }

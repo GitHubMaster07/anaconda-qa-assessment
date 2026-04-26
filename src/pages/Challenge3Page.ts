@@ -7,17 +7,17 @@ export class Challenge3Page extends BasePage {
   }
 
   async navigateToChallenge(): Promise<void> {
-    await this.page.locator('a[href="/challenge3.html"]').click();
+    await this.page.getByRole('link', { name: 'Challenge 3' }).click();
   }
 
   async clickForgotPassword(): Promise<void> {
-    await this.page.click('button.link-button');
+    await this.page.getByRole('button', { name: /forgot password/i }).click();
   }
 
   async resetPassword(email: string): Promise<void> {
     await this.page.waitForSelector('#email');
     await this.page.fill('#email', email);
-    await this.page.click('button.submit-btn');
+    await this.page.getByRole('button', { name: /reset password/i }).click();
   }
 
   async verifySuccess(): Promise<void> {

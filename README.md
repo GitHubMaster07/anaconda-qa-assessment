@@ -92,9 +92,6 @@ anaconda-qa-assessment/
 └── README.md
 ```
 
-```
-
----
 
 ## 🚀 Quick Start
 
@@ -137,9 +134,11 @@ Challenge 4 - Global State
  - Page-specific ready state handling
 
  ## 🔄 CI/CD Pipelines
+ ```
 Pipeline	   Trigger	           Duration
 Smoke	       Every push/PR	   ~2 min
 Regression	   Nightly (3 AM)	   ~1.5 min
+``` 
 
 ## 📊 Test Commands
 ```

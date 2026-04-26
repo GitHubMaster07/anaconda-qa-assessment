@@ -27,17 +27,21 @@ export class Challenge2Page extends BasePage {
     await this.page.fill(this.selectors.passwordInput, password);
     await this.page.click(this.selectors.submitButton);
     
-    // Wait for either dashboard to appear OR login form to disappear
-    await this.page.waitForFunction(
-      () => {
-        const dashboard = document.querySelector('#dashboard');
-        const loginForm = document.querySelector('#loginForm');
-        return (dashboard && window.getComputedStyle(dashboard).display !== 'none') ||
-               (loginForm && window.getComputedStyle(loginForm).display === 'none');
-      }
-    );
+    // Race between success and error
+    const errorMessage = this.page.locator(this.selectors.errorMessage);
     
-    // Wait for menu button to have data-initialized attribute (set by JS after animation)
+    await Promise.race([
+      this.page.locator(this.selectors.dashboard).waitFor({ state: 'visible' }),
+      errorMessage.waitFor({ state: 'visible' })
+    ]);
+    
+    // If error appeared, throw clear message
+    if (await errorMessage.isVisible()) {
+      const errorText = await errorMessage.textContent();
+      throw new Error(`Login failed: ${errorText}`);
+    }
+    
+    // Wait for menu to be initialized by JavaScript
     await this.page.waitForSelector('#menuButton[data-initialized="true"]');
   }
 
@@ -57,14 +61,17 @@ export class Challenge2Page extends BasePage {
     const menuButton = this.page.locator(this.selectors.menuButton);
     await menuButton.click();
     
-    // Wait for dropdown menu to have 'show' class
     await this.page.waitForSelector('#accountMenu.show');
     
     const logoutOption = this.page.locator(this.selectors.logoutOption);
     await logoutOption.click();
     
-    // Wait for login form to be visible again
     await this.page.waitForSelector(this.selectors.loginForm, { state: 'visible' });
     await expect(this.page.locator(this.selectors.emailInput)).toBeVisible();
+  }
+
+  async clearSession(): Promise<void> {
+    await this.page.context().clearCookies();
+    await this.page.evaluate(() => localStorage.clear());
   }
 }

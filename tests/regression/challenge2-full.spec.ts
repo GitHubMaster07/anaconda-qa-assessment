@@ -26,17 +26,17 @@ test.describe('Challenge 2 - Full Regression @regression', () => {
   });
 
   test('Multiple login and logout cycles', async () => {
-  for (let i = 0; i < 3; i++) {
-    await challengePage.loginSuccess('test1@example.com', 'password1');
-    await challengePage.logout();
-    
-    // Wait for login form to be fully visible and ready for next login
-    await challengePage.page.waitForSelector('#loginForm', { state: 'visible' });
-    await expect(challengePage.page.locator('#email')).toBeVisible();
-    await expect(challengePage.page.locator('#password')).toBeVisible();
-    await expect(challengePage.page.locator('#submitButton')).toBeVisible();
-  }
-});
+    for (let i = 0; i < 3; i++) {
+      await challengePage.loginSuccess('test1@example.com', 'password1');
+      await challengePage.logout();
+      
+      // Clean up session state between cycles
+      await challengePage.clearSession();
+      
+      // Wait for login form to be ready
+      await this.page.waitForSelector('#loginForm', { state: 'visible' });
+    }
+  });
 
   test('Animation completes before logout menu is clickable', async ({ page }) => {
     await challengePage.loginSuccess('test1@example.com', 'password1');

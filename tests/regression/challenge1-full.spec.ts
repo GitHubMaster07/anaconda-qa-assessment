@@ -41,12 +41,10 @@ test.describe('Challenge 1 - Full Regression @regression', () => {
   test('Login 5 times with different users', async ({ page }) => {
     const users = TestDataFactory.generateMultipleUsers(5);
     
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i];
-      
-      // Navigate directly to avoid link click issues after multiple attempts
-      await page.goto('http://localhost:3000/challenge1.html');
-      
+    // Navigate once, not inside the loop
+    await page.goto('http://localhost:3000/challenge1.html');
+    
+    for (const user of users) {
       await challengePage.login(user.email, user.password);
       await challengePage.verifyLoginSuccess(user.email, user.password);
       await challengePage.waitForFormReset();

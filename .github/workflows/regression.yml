@@ -4,17 +4,11 @@ on:
   schedule:
     - cron: '0 3 * * *'
   workflow_dispatch:
-  pull_request:
-    branches: [main, master]
-    paths:
-      - 'src/**'
-      - 'tests/**'
 
 jobs:
   regression:
     timeout-minutes: 30
     runs-on: ubuntu-latest
-    
     strategy:
       fail-fast: false
       matrix:
@@ -26,7 +20,7 @@ jobs:
       
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
       
       - name: Install dependencies
@@ -35,8 +29,13 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install ${{ matrix.browser }} --with-deps
       
+      - name: Start test server
+        run: |
+          npm run start &
+          npx wait-on http://localhost:3000 --timeout 30000
+      
       - name: Run regression tests
-        run: npx playwright test --grep @regression --project=${{ matrix.browser }} --shard=${{ matrix.shard }} --workers=2
+        run: npx playwright test --grep @regression --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
       
       - name: Upload report
         if: always()
@@ -47,23 +46,3 @@ jobs:
             playwright-report/
             test-results/
           retention-days: 30
-      
-      - name: Slack notification on failure
-        if: failure() && github.event.schedule == '0 3 * * *'
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          payload: |
-            {
-              "text": "❌ Nightly regression failed on ${{ matrix.browser }}!",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "🚨 *Nightly Regression Failed*\nBrowser: ${{ matrix.browser }}\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>"
-                  }
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

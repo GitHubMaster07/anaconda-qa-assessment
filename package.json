@@ -15,6 +15,7 @@
     "@playwright/test": "^1.42.1",
     "@types/node": "^20.11.24",
     "express": "^4.22.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "wait-on": "^9.0.5"
   }
 }

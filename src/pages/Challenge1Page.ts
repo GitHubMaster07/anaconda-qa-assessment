@@ -26,17 +26,15 @@ export class Challenge1Page extends BasePage {
   }
 
   async verifyLoginSuccess(email: string, password: string): Promise<void> {
-    const message = this.page.locator(this.selectors.successMessage);
-    await message.waitFor({ state: 'visible' });
-    
     const emailDisplay = this.page.locator(this.selectors.emailDisplay);
     const passwordDisplay = this.page.locator(this.selectors.passwordDisplay);
     
+    // Wait for non-empty email value (retries until condition passes)
     await expect(async () => {
       const emailText = await emailDisplay.textContent();
-      const passwordText = await passwordDisplay.textContent();
       expect(emailText).toBe(`Email: ${email}`);
-      expect(passwordText).toBe(`Password: ${password}`);
-    }).toPass();
+    }).toPass({ timeout: 10000 });
+    
+    await expect(passwordDisplay).toHaveText(`Password: ${password}`);
   }
 }

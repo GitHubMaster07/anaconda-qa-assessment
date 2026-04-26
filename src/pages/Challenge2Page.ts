@@ -27,8 +27,9 @@ export class Challenge2Page extends BasePage {
     await this.page.fill(this.selectors.passwordInput, password);
     await this.page.click(this.selectors.submitButton);
     
-    await this.page.waitForSelector(this.selectors.dashboard, { state: 'visible', timeout: 5000 });
-    await this.page.waitForSelector('#menuButton[data-initialized="true"]', { timeout: 5000 });
+    // Longer timeout for Firefox in CI
+    await this.page.waitForSelector(this.selectors.dashboard, { state: 'visible', timeout: 10000 });
+    await this.page.waitForSelector('#menuButton[data-initialized="true"]', { timeout: 10000 });
   }
 
   async loginFail(email: string, password: string): Promise<void> {
@@ -47,7 +48,7 @@ export class Challenge2Page extends BasePage {
     const menuButton = this.page.locator(this.selectors.menuButton);
     await menuButton.click();
     
-    await this.page.waitForSelector('#accountMenu.show', { state: 'visible', timeout: 5000 });
+    await this.page.waitForSelector('#accountMenu.show', { state: 'visible', timeout: 10000 });
     
     const logoutOption = this.page.locator(this.selectors.logoutOption);
     await logoutOption.click();

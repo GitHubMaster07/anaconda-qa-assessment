@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Login API', () => {
+test.describe('Login API @smoke @regression', () => {
 
   test('POST /login - valid credentials', async ({ request }) => {
     const response = await request.post('/api/login', {
@@ -13,7 +13,7 @@ test.describe('Login API', () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body.token).toBeTruthy(); // token should be returned
+    expect(body.token).toBeTruthy();
   });
 
   test('POST /login - invalid password', async ({ request }) => {

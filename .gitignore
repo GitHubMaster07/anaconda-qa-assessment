@@ -148,6 +148,7 @@ test-results.json
 junit.xml
 allure-results/
 reports/
+allure-report/
 *.zip
 *.webm
 *.trace

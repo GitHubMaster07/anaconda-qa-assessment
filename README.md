@@ -194,12 +194,14 @@ npm run test:smoke
 # Run regression tests
 npm run test:regression
 ```
+```markdown
 ## 🧪 Test Results
 
 | Suite | Tests | Status |
 |-------|-------|--------|
 | Smoke | 8 | ✅ All passing |
-| Regression | 30 | ✅ All passing |
+| Regression | 28 | ✅ All passing |
+| **Total** | **36** | ✅ **All passing** |
 | CI/CD | - | ✅ Green |
 
 

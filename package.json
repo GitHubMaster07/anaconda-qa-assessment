@@ -10,16 +10,15 @@
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
     "test:with-server": "start npm start && wait-on http://localhost:3000 && npm run test:smoke",
-
     "allure:generate": "allure generate ./allure-results --clean",
     "allure:open": "allure open ./allure-report"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.1",
     "@types/node": "^20.11.24",
+    "allure-playwright": "^2.15.1",
     "express": "^4.22.1",
     "typescript": "^5.3.3",
-    "wait-on": "^9.0.5",
-    "allure-playwright": "^2.0.0"
+    "wait-on": "^9.0.5"
   }
 }

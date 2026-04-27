@@ -15,7 +15,6 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:3000',
 
-    channel: 'chrome',
 
     // Collect trace only when a test retries (useful for debugging flaky tests)
     trace: 'on-first-retry',

@@ -4,14 +4,16 @@
   "description": "QA Automation Engineer skills demonstration – Playwright UI challenge",
   "scripts": {
     "start": "node server.js",
-    "test": "playwright test",
-    "test:smoke": "playwright test --grep @smoke",
-    "test:regression": "playwright test --grep @regression",
+    "test": "playwright test && npm run allure:report",
+    "test:smoke": "playwright test --grep @smoke && npm run allure:report",
+    "test:regression": "playwright test --grep @regression && npm run allure:report",
+    "test:api": "playwright test tests/api/ && npm run allure:report",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
     "test:with-server": "start npm start && wait-on http://localhost:3000 && npm run test:smoke",
-    "allure:generate": "allure generate ./allure-results --clean",
-    "allure:open": "allure open ./allure-report"
+    "allure:generate": "allure generate allure-results --clean -o allure-report",
+    "allure:open": "allure open allure-report",
+    "allure:report": "npm run allure:generate && npm run allure:open"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.1",

@@ -27,7 +27,6 @@ export class Challenge2Page extends BasePage {
     await this.page.fill(this.selectors.passwordInput, password);
     await this.page.click(this.selectors.submitButton);
     
-    // Race between success and error
     const errorMessage = this.page.locator(this.selectors.errorMessage);
     
     await Promise.race([
@@ -35,13 +34,11 @@ export class Challenge2Page extends BasePage {
       errorMessage.waitFor({ state: 'visible' })
     ]);
     
-    // If error appeared, throw clear message
     if (await errorMessage.isVisible()) {
       const errorText = await errorMessage.textContent();
       throw new Error(`Login failed: ${errorText}`);
     }
     
-    // Wait for menu to be initialized by JavaScript
     await this.page.waitForSelector('#menuButton[data-initialized="true"]');
   }
 

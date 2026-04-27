@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Forgot Password API', () => {
+test.describe('Forgot Password API @smoke @regression', () => {
 
   test('POST /forgot-password - valid email', async ({ request }) => {
     const response = await request.post('/api/forgot-password', {

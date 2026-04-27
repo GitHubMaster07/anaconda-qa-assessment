@@ -1,15 +1,14 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Auth API', () => {
+test.describe('Auth API @smoke @regression', () => {
 
   test('GET /profile - unauthorized', async ({ request }) => {
     const response = await request.get('/api/profile');
 
-    expect(response.status()).toBe(401); // should require token
+    expect(response.status()).toBe(401);
   });
 
   test('GET /profile - authorized', async ({ request }) => {
-    // login first
     const login = await request.post('/api/login', {
       data: {
         email: 'user@example.com',

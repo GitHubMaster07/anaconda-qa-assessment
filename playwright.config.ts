@@ -1,4 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load environment specific .env file
+const env = process.env.ENV || 'development';
+dotenv.config({ path: path.resolve(process.cwd(), `.env.${env}`) });
 
 export default defineConfig({
   testDir: './tests',
@@ -8,26 +14,17 @@ export default defineConfig({
   workers: 4,
 
   reporter: [
-  ['list'],
-  ['allure-playwright']
-],
+    ['list'],
+    ['allure-playwright', { outputFolder: 'allure-results' }]
+  ],
 
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || 'http://localhost:3000',
 
-
-    // Collect trace only when a test retries (useful for debugging flaky tests)
     trace: 'on-first-retry',
-
-    // Capture screenshot only on failure
     screenshot: 'only-on-failure',
-
-    // Keep video only for failed tests
     video: 'retain-on-failure',
-
-    // Keep console logs for failed tests (helps debug JS/runtime errors)
     console: 'retain-on-failure',
-
   },
 
   projects: [

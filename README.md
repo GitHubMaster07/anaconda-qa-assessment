@@ -79,7 +79,7 @@ Production-ready test automation for Playwright Testing Challenges. Enterprise p
 |---------|----------|
 | Hardcoded test data | Dynamic `TestDataFactory.generateMultipleUsers(3)` |
 | `waitForTimeout(2000)` | Wait for `data-test-ready` attribute |
-| XPath `//*[@href...]` | CSS selector `a[href="/challenge1.html"]` |
+| XPath `//*[@href...]` | `getByRole('link', { name: 'Challenge 1' })` |
 | Email/password not captured | Added `#emailDisplay` and `#passwordDisplay` elements |
 
 ### Challenge 2 - Animated Form
@@ -220,6 +220,13 @@ npm run test:regression # Full test suite
 npm run test:headed     # With browser UI
 npm run test:debug      # Debug mode
 ```
+## 🔮 Future Improvements
+
+- Replace remaining CSS selectors with `getByRole` for better resilience
+- Add API tests for backend validation
+- Implement visual regression testing with Percy
+- Add load testing with Locust
+- Generate Allure reports for better analytics
 
 ## 👤 Author
 Sergey Volodin

@@ -21,7 +21,11 @@ export class Challenge3Page extends BasePage {
   }
 
   async verifySuccess(): Promise<void> {
-    await this.page.waitForSelector('.success-message[data-test-ready="true"]');
+    // Wait for success message with the expected text
+    await this.page.waitForFunction(() => {
+      const el = document.querySelector('.success-message');
+      return el && el.textContent && el.textContent.includes('Password reset link sent');
+    }, { timeout: 10000 });
     
     const message = this.page.locator('.success-message');
     await expect(message).toContainText('Password reset link sent');

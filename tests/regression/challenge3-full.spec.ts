@@ -20,7 +20,6 @@ test.describe('Challenge 3 - Full Regression @regression', () => {
     await challengePage.clickForgotPassword();
     await challengePage.resetPassword('not-an-email');
     
-    // Should show validation error or not proceed
     const emailInput = page.locator('#email');
     const validity = await emailInput.evaluate((el: HTMLInputElement) => el.validity.typeMismatch);
     expect(validity).toBe(true);
@@ -37,13 +36,11 @@ test.describe('Challenge 3 - Full Regression @regression', () => {
   test('Forgot password modal closes and reopens', async ({ page }) => {
     await challengePage.clickForgotPassword();
     await page.keyboard.press('Escape');
-    
-    // Modal should be closed, reopen
     await challengePage.clickForgotPassword();
     await expect(page.locator('#email')).toBeVisible();
   });
 
-  test('Success message contains correct email', async ({ page }) => {
+  test('Success message contains correct email', async () => {
     const testEmail = 'user@example.com';
     await challengePage.clickForgotPassword();
     await challengePage.resetPassword(testEmail);

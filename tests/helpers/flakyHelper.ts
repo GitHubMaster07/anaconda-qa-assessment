@@ -18,13 +18,13 @@ export function flakyTest(
   const isKnownFlaky = flakyConfig.knownFlaky.some(f => name.includes(f));
   const retries = options?.maxRetries || (isKnownFlaky ? flakyConfig.maxRetries : 1);
   
-  test(name, async (context, testInfo) => {
+  test(name, async (testParams, testInfo) => {
     let attempt = 1;
     let lastError: Error | null = null;
     
     while (attempt <= retries) {
       try {
-        await body(context, testInfo);
+        await body(testParams, testInfo);
         if (attempt > 1) {
           console.log(`✅ Flaky test passed on attempt ${attempt}: ${name}`);
         }

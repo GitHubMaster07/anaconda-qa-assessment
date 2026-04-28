@@ -33,13 +33,44 @@ jobs:
           npx wait-on http://localhost:3000 --timeout 30000
       
       - name: Run performance tests
+        id: perf-tests
         run: npx playwright test tests/performance/ --grep @performance --project=${{ matrix.browser }}
-        continue-on-error: true  # Don't block CI, only report
+        continue-on-error: true
+      
+      - name: Check for flaky tests
+        if: always()
+        run: |
+          if [ -f "test-results/results.json" ]; then
+            FLAKY_COUNT=$(grep -o '"retry":[1-9]' test-results/results.json | wc -l)
+            echo "FLAKY_COUNT=$FLAKY_COUNT" >> $GITHUB_ENV
+            echo "Flaky tests detected: $FLAKY_COUNT"
+          fi
+      
+      - name: Generate flaky test report
+        if: always()
+        run: |
+          echo "## ⚡ Performance Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Status | ${{ steps.perf-tests.outcome }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Flaky tests detected | ${{ env.FLAKY_COUNT || 0 }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Browser | ${{ matrix.browser }} |" >> $GITHUB_STEP_SUMMARY
       
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: perf-report-${{ matrix.browser }}
-          path: playwright-report/
+          path: |
+            playwright-report/
+            test-results/
           retention-days: 30
+      
+      - name: Upload flaky test tracking
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flaky-tracking-${{ matrix.browser }}
+          path: test-results/results.json
+          retention-days: 90

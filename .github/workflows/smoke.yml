@@ -36,16 +36,33 @@ jobs:
           npx wait-on http://localhost:3000 --timeout 30000
       
       - name: Run UI smoke tests
+        id: ui-tests
         run: npx playwright test --grep @smoke --project=${{ matrix.browser }}
         continue-on-error: false
       
       - name: Run API smoke tests
+        id: api-tests
         run: npx playwright test tests/api/ --grep @smoke --project=${{ matrix.browser }}
         continue-on-error: false
 
       - name: Run accessibility tests
+        id: a11y-tests
         run: npx playwright test tests/accessibility/ --project=${{ matrix.browser }}
-        continue-on-error: true    
+        continue-on-error: true
+      
+      - name: Track test duration
+        if: always()
+        run: |
+          echo "## ⏱️ Smoke Test Results - ${{ matrix.browser }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Test Suite | Status | Duration |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------|--------|----------|" >> $GITHUB_STEP_SUMMARY
+          echo "| UI Smoke | ${{ steps.ui-tests.outcome }} | - |" >> $GITHUB_STEP_SUMMARY
+          echo "| API Smoke | ${{ steps.api-tests.outcome }} | - |" >> $GITHUB_STEP_SUMMARY
+          echo "| Accessibility | ${{ steps.a11y-tests.outcome }} | - |" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Total workflow duration: ${{ github.run_duration }} seconds" >> $GITHUB_STEP_SUMMARY
       
       - name: Upload report
         if: always()
@@ -54,3 +71,11 @@ jobs:
           name: smoke-report-${{ matrix.browser }}
           path: playwright-report/
           retention-days: 7
+      
+      - name: Upload duration metric
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: duration-smoke-${{ matrix.browser }}-${{ github.run_id }}
+          path: test-results/
+          retention-days: 30

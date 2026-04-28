@@ -1,23 +1,19 @@
-
 # 🎯 Anaconda QA Assessment
 
 [![Smoke Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/smoke.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/smoke.yml)
 [![Regression Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/regression.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/regression.yml)
 [![Performance Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/performance.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/performance.yml)
 
-![Tests](https://img.shields.io/badge/tests-52_total-brightgreen)
+![Tests](https://img.shields.io/badge/tests-80_total-brightgreen)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
 
 ---
 
 ## 📌 Context
 
-This project is a **solution to a QA automation challenge** provided by
-Anaconda, Inc.
-based on the repository
-playwright-challenges.
+This project is a **solution to a QA automation challenge** provided by Anaconda, Inc., based on the repository `playwright-challenges`.
 
-The goal was not just to make tests pass, but to transform a **flaky, non-scalable test suite** into a **stable, maintainable automation framework** using real-world engineering practices.
+The goal was not just to make tests pass, but to transform a **flaky, non-scalable test suite** into a **production-oriented, maintainable automation framework** using real-world engineering practices.
 
 ---
 
@@ -26,7 +22,8 @@ The goal was not just to make tests pass, but to transform a **flaky, non-scalab
 * ✅ Flaky tests stabilized (removed hard waits)
 * ✅ Parallel-safe (dynamic test data)
 * ✅ CI pipelines (smoke / regression / performance)
-* ✅ UI + API + Accessibility + Performance coverage
+* ✅ UI + API + Accessibility + Performance + Security coverage
+* ✅ Contract testing (Zod schemas)
 * ⚠️ Accessibility issues intentionally exposed (not hidden)
 * ⚠️ Performance tests are non-deterministic → non-blocking
 * ⚠️ Some testability hooks added for demo purposes (see limitations)
@@ -45,7 +42,7 @@ The goal was not just to make tests pass, but to transform a **flaky, non-scalab
 
 ## 📖 Overview
 
-This project demonstrates how to evolve a basic test suite into a **production-oriented automation framework**.
+This project demonstrates how to evolve a basic test suite into a **production-grade quality engineering framework**.
 
 | Problem              | Solution                                 |
 | -------------------- | ---------------------------------------- |
@@ -94,8 +91,8 @@ Reduced flakiness and improved execution speed.
 * `data-test-ready`
 * `window.isAppReady`
 
-**Important:**
-These were added for demonstration purposes to simulate real-world testability improvements.
+⚠️ **Note:** Added for demonstration purposes.
+In real production systems, alternatives would include network-based synchronization or event listeners.
 
 ---
 
@@ -132,25 +129,69 @@ retries: 1 // CI only
 
 ---
 
+### 🧹 Test Data Lifecycle
+
+The framework implements a cleanup pattern for test data:
+
+```typescript
+test.afterEach(async ({ request }) => {
+  if (createdEmail) {
+    await CleanupHelper.cleanupAll(request);
+  }
+});
+```
+
+**Note:**
+Current implementation logs cleanup intent.
+In a real project, this would remove records via API/database.
+
+---
+
 ## 🔌 API Testing
 
-Covered endpoints:
+16 API tests covering backend validation with **contract testing**:
 
-* `POST /api/login`
-* `POST /api/forgot-password`
-* `GET /api/profile`
+| Endpoint                  | Tests | Contract Validation           |
+| ------------------------- | ----- | ----------------------------- |
+| POST /api/login           | 3     | ✅ Zod schema (token format)   |
+| POST /api/forgot-password | 3     | ✅ Zod schema (message format) |
+| GET /api/profile          | 2     | ✅ Zod schema (user object)    |
 
-Includes:
+---
 
-* Positive/negative cases
-* Validation checks
-* Auth behavior
+### Contract Testing with Zod
+
+Each API response is validated against a schema:
+
+```typescript
+const loginSuccessSchema = z.object({
+  token: z.string().min(1)
+});
+
+const validation = loginSuccessSchema.safeParse(response);
+expect(validation.success).toBe(true);
+```
+
+---
+
+## 🔒 Security Testing
+
+Security tests validate:
+
+| Threat           | Test Coverage                 |
+| ---------------- | ----------------------------- |
+| SQL Injection    | Login & forgot password       |
+| XSS              | Email sanitization            |
+| Brute force      | Rate limiting detection       |
+| Token validation | Invalid / missing / malformed |
+
+⚠️ These tests run in CI but do not block the pipeline.
 
 ---
 
 ## ♿ Accessibility Testing
 
-Using axe-core (WCAG 2.1 AA).
+Using **axe-core (WCAG 2.1 AA)**.
 
 Detected real issues:
 
@@ -158,10 +199,7 @@ Detected real issues:
 * Missing landmarks
 * Missing H1
 
-⚠️ Important:
-
-Accessibility violations are **reported but not blocking CI**,
-as they originate from the provided challenge HTML.
+⚠️ Reported but not blocking CI (issues originate from challenge HTML).
 
 ---
 
@@ -180,8 +218,8 @@ Measured flows:
 ⚠️ Notes:
 
 * CI environments are noisy
-* Tests run weekly and are non-blocking
-* Intended for trend monitoring, not strict gating
+* Non-blocking (monitoring only)
+* Intended for trend tracking
 
 ---
 
@@ -194,7 +232,44 @@ On every failure:
 * 🔍 Playwright trace
 * 📝 Console logs
 
-This significantly reduces time to identify root cause.
+👉 Enables fast root cause analysis in CI.
+
+---
+
+## 📊 Flaky Test Management
+
+The framework includes:
+
+* Retry mechanism
+* Flaky detection strategy
+* Monitoring thresholds
+
+---
+
+## 📊 Flaky Test Management (Planned)
+
+> *Note:* Removed due to Playwright API compatibility constraints.
+
+```typescript
+export function flakyTest(name, body, options) {
+  // Retry logic
+  // Flaky tagging
+  // Notifications
+}
+```
+
+---
+
+## 📈 CI Insights & Metrics
+
+Tracks:
+
+* Test duration trends
+* Success rate over last runs
+* Flaky test detection
+* Performance degradation
+
+Available via GitHub Actions artifacts.
 
 ---
 
@@ -205,7 +280,7 @@ docker build -t playwright-tests .
 docker run --rm playwright-tests
 ```
 
-Ensures consistency between local and CI environments.
+Ensures consistent execution across environments.
 
 ---
 
@@ -219,7 +294,7 @@ Includes:
 
 * Execution timeline
 * Failure artifacts
-* Historical trends (if enabled)
+* Historical trends
 
 ---
 
@@ -232,8 +307,6 @@ npm run test:prod
 ```
 
 Uses `.env.*` files.
-
-Secrets should be stored in CI (e.g., GitHub Secrets).
 
 ---
 
@@ -270,11 +343,11 @@ npm run test:smoke
 
 ## 🧪 Test Results
 
-| Suite              | Status               |
-| ------------------ | -------------------- |
-| Core (52 tests)    | ✅ Stable             |
-| Accessibility (10) | ⚠️ Issues detected   |
-| Performance (4)    | ⚠️ Non-deterministic |
+| Suite           | Status               |
+| --------------- | -------------------- |
+| Core (52 tests) | ✅ Stable             |
+| Accessibility   | ⚠️ Issues            |
+| Performance     | ⚠️ Non-deterministic |
 
 ---
 
@@ -290,30 +363,29 @@ npm run test:smoke
 
 ## ⚠️ Limitations & Trade-offs
 
-* Some DOM attributes were added to improve testability (demo purpose)
-* No test data cleanup (acceptable for isolated test environment)
-* No contract testing (API schema validation not included)
-* Limited security testing (no rate-limit / token edge cases)
-* No historical performance tracking (only snapshot checks)
+* Some DOM attributes added for testability (demo purpose)
+* Cleanup is simulated (no real API delete)
+* Security tests are non-blocking
+* Performance tests are environment-dependent
+* No full contract coverage (partial via Zod)
 
 ---
 
 ## 🔮 Future Improvements
 
-* Add contract testing (schema validation)
-* Introduce test data cleanup via API
-* Expand API coverage (reduce UI dependency)
+* Expand contract testing coverage
+* Add real data cleanup APIs
+* Increase API vs UI ratio
 * Add visual regression testing
-* Add flaky test tracking metrics
-* Integrate notifications (Slack, etc.)
+* Implement flaky tracking fully
+* Add Slack/alerting integration
 
 ---
 
 ## 👤 Author
 
-Sergei Volodin
-
-GitHub: GitHubMaster07
+Sergey Volodin
+GitHub: https://github.com/GitHubMaster07
 
 ---
 

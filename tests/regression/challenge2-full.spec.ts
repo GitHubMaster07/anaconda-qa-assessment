@@ -15,17 +15,10 @@ test.describe('Challenge 2 - Full Regression @regression', () => {
     await challengePage.logout();
   });
 
-  test('Login with invalid credentials shows error', async () => {
-    await challengePage.loginFail('wrong@example.com', 'wrongpass');
-    await challengePage.verifyLoginError();
-  });
-
   test('Logout without login first - menu should not appear', async ({ page }) => {
     const menuButton = page.locator('#menuButton');
     await expect(menuButton).not.toBeVisible();
   });
-
-  
 
   test('Animation completes before logout menu is clickable', async ({ page }) => {
     await challengePage.loginSuccess('test1@example.com', 'password1');

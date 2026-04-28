@@ -311,7 +311,8 @@ npm run test:smoke
 
 ## 👤 Author
 
-Sergey Volodin
+Sergei Volodin
+
 GitHub: GitHubMaster07
 
 ---

@@ -5,185 +5,257 @@
 [![Tests](https://img.shields.io/badge/tests-52%20passing-brightgreen)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue)](https://www.typescriptlang.org/)
 
-**QA Automation Engineer skills demonstration – Production-grade Playwright automation framework**
+# 🎯 Anaconda QA Assessment
 
-> Built for Anaconda AI platform team interview | Senior QA Engineer level
+[![Smoke Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/smoke.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/smoke.yml)
+[![Regression Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/regression.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/regression.yml)
+[![Performance Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/performance.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/performance.yml)
+
+![Tests](https://img.shields.io/badge/tests-74_total-brightgreen)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
 
 ---
 
-## 📋 Table of Contents
+## 📌 Context
 
-- [Overview](#overview)
-- [Architecture Decisions](#-architecture-decisions)
-- [Challenges Solved](#-challenges-solved)
-- [Before vs After](#-before-vs-after)
-- [Technologies](#-technologies)
-- [Project Structure](#-project-structure)
-- [Quick Start](#-quick-start)
-- [Test Results](#-test-results)
-- [CI/CD Pipelines](#-cicd-pipelines)
-- [Test Commands](#-test-commands)
-- [Future Improvements](#-future-improvements)
-- [Author](#-author)
-- [License](#-license)
+This project is a **solution to a QA automation challenge** provided by
+Anaconda, Inc.
+based on the repository
+playwright-challenges.
+
+The goal was not just to make tests pass, but to transform a **flaky, non-scalable test suite** into a **stable, maintainable automation framework** using real-world engineering practices.
+
+---
+
+## 🚀 TL;DR (for reviewers)
+
+* ✅ Flaky tests stabilized (removed hard waits)
+* ✅ Parallel-safe (dynamic test data)
+* ✅ CI pipelines (smoke / regression / performance)
+* ✅ UI + API + Accessibility + Performance coverage
+* ⚠️ Accessibility issues intentionally exposed (not hidden)
+* ⚠️ Performance tests are non-deterministic → non-blocking
+* ⚠️ Some testability hooks added for demo purposes (see limitations)
+
+---
+
+## 💼 Business Value
+
+* Faster feedback loop: **~2 min smoke suite**
+* Reduced regression risk in critical flows (auth, global state)
+* Improved CI reliability → fewer false failures
+* Clear debugging artifacts → faster triage
+* Scalable foundation for growing test coverage
 
 ---
 
 ## 📖 Overview
 
-Production-ready test automation for Playwright Testing Challenges. Enterprise patterns, CI/CD integration, solutions to flaky tests.
+This project demonstrates how to evolve a basic test suite into a **production-oriented automation framework**.
 
-| Aspect | Implementation |
-|--------|----------------|
-| Framework | Playwright + TypeScript |
-| Pattern | Page Object Model (POM) |
-| CI/CD | GitHub Actions |
-| Parallelization | 4 workers |
-| Test Types | Smoke, Regression |
-
----
-
-## 📦 What This Repo Contains
-
-### 🧠 Architecture Decisions
-
-### Why Page Object Model?
-**Problem**: Original tests had duplicate selectors and logic across 4 challenges.  
-**Solution**: Extracted all page interactions into dedicated classes.  
-**Benefit**: When UI changes, fix once in Page Object, not in every test.
-
-### Why Test Data Factory?
-**Problem**: Hardcoded `test1@example.com` causes conflicts in parallel runs.  
-**Solution**: Generate unique emails using `Date.now()` + random string.  
-**Benefit**: Tests can run in parallel without data collisions.
-
-### Why Smart Waits instead of `waitForTimeout`?
-**Problem**: Static waits make tests flaky (too slow in CI, too fast locally).  
-**Solution**: Wait for actual conditions (`waitForSelector`, `waitForFunction`).  
-**Benefit**: Tests run as fast as the app allows, never slower.
-
-### Why Separate Positive/Negative Methods?
-**Problem**: Same `login()` method waits for dashboard even for invalid credentials.  
-**Solution**: `loginSuccess()` waits for UI, `loginFail()` only submits form.  
-**Benefit**: Negative tests run faster and don't timeout waiting for UI that never appears.
-
-### Why `data-test-ready` Attributes?
-**Problem**: No reliable way to know when animations complete.  
-**Solution**: Modified HTML to set `data-test-ready="true"` when UI is stable.  
-**Benefit**: Test waits for explicit signal, not arbitrary timeout.
-
-### Why `clearSession()` between Cycles?
-**Problem**: Multiple login/logout cycles cause state leakage.  
-**Solution**: Clear cookies and localStorage between iterations.  
-**Benefit**: Each cycle starts with fresh state, no cross-contamination.
+| Problem              | Solution                                 |
+| -------------------- | ---------------------------------------- |
+| Flaky tests          | Smart waits + explicit readiness signals |
+| Hardcoded test data  | Dynamic TestDataFactory                  |
+| Poor structure       | Page Object Model                        |
+| CI instability       | Retry strategy + pipeline separation     |
+| Debugging difficulty | Traces, videos, screenshots              |
 
 ---
 
-## 🔧 Challenges Solved
+## 🧠 Architecture Decisions
 
-### Challenge 1 - Multiple Logins
-| Problem | Solution |
-|---------|----------|
-| Hardcoded test data | Dynamic `TestDataFactory.generateMultipleUsers(3)` |
-| `waitForTimeout(2000)` | Wait for `data-test-ready` attribute |
-| XPath `//*[@href...]` | `getByRole('link', { name: 'Challenge 1' })` |
-| Email/password not captured | Added `#emailDisplay` and `#passwordDisplay` elements |
+### Page Object Model (POM)
 
-### Challenge 2 - Animated Form
-| Problem | Solution |
-|---------|----------|
-| Menu not clickable immediately | Wait for `data-initialized="true"` attribute |
-| No error message for invalid login | Added `#errorMessage` div |
-| Negative test waiting for dashboard | Separate `loginFail()` method |
-| Dropdown menu timing | `waitForSelector('#accountMenu.show')` |
+Centralized UI logic and selectors.
 
-### Challenge 3 - Forgot Password
-| Problem | Solution |
-|---------|----------|
-| `setTimeout` delays | Removed, direct DOM updates |
-| Case-sensitive heading check | Regex `/success/i` |
-| Modal not visible before interaction | `waitForSelector('input#email')` |
-
-### Challenge 4 - Global State
-| Problem | Solution |
-|---------|----------|
-| Ignored ready state hint | `waitForFunction(() => window.isAppReady === true)` |
-| No logout verification | Assert email input visible after logout |
-| Race condition on page load | Page-specific `waitForPageReady` flag |
+**Trade-off:**
+Simple and readable, but less flexible than Screenplay pattern.
 
 ---
 
-## 📊 Before vs After
+### Dynamic Test Data
 
-| Aspect | Original Code | My Solution |
-|--------|---------------|-------------|
-| Selectors | XPath `//*[@href...]` | CSS + `getByRole` |
-| Test Data | Hardcoded `test1@example.com` | Dynamic `TestDataFactory` |
-| Waits | `waitForTimeout(2000)` | `waitForSelector` + `waitForFunction` |
-| Structure | All in one test file | Page Object Model |
-| Negative Tests | `login()` times out | `loginFail()` no wait |
-| Global State | Ignored | `waitForFunction(() => window.isAppReady)` |
-| Parallel Ready | ❌ No | ✅ Yes |
-| CI Stable | ❌ Flaky | ✅ Stable |
+Generated via `crypto.randomUUID()`.
 
-### ✅ Enterprise Features
-
-- **Page Object Model** – Single source of truth for selectors  
-- **Smart Wait Helpers** – No `waitForTimeout`, only condition-based waits  
-- **No XPath** – Role-based + CSS selectors only  
-- **Dynamic Test Data** – Parallel execution ready  
-- **GitHub Actions** – CI/CD with matrix strategy  
-- **Test Tags** – `@smoke` and `@regression` for filtering  
+**Impact:**
+Safe parallel execution without collisions.
 
 ---
 
-## 🛠️ Technologies
+### Smart Waiting Strategy
 
-| Technology | Version |
-|------------|---------|
-| Playwright | ^1.42.1 |
-| TypeScript | ^5.3.3 |
-| Node.js | 18+ |
-| Express | ^4.22.1 |
+Replaced `waitForTimeout` with:
+
+* `waitForSelector`
+* `waitForFunction`
+
+**Impact:**
+Reduced flakiness and improved execution speed.
+
+---
+
+### Explicit Readiness Signals
+
+* `data-test-ready`
+* `window.isAppReady`
+
+**Important:**
+These were added for demonstration purposes to simulate real-world testability improvements.
+
+---
+
+## 🧪 Test Strategy
+
+### Risk-Based Coverage
+
+| Area           | Risk   | Coverage  |
+| -------------- | ------ | --------- |
+| Authentication | High   | UI + API  |
+| Global State   | High   | UI        |
+| API            | High   | API       |
+| Forms          | Medium | UI        |
+| Accessibility  | Medium | Automated |
+| Performance    | Medium | Synthetic |
+
+---
+
+### Test Pyramid (Current)
+
+* API: 16 tests
+* UI: 44 tests
+* Other: 14 tests
+
+⚠️ UI-heavy — acceptable for demo, but API coverage should dominate in real projects.
+
+---
+
+### Retry Policy
+
+```ts
+retries: 1 // CI only
+```
+
+---
+
+## 🔌 API Testing
+
+Covered endpoints:
+
+* `POST /api/login`
+* `POST /api/forgot-password`
+* `GET /api/profile`
+
+Includes:
+
+* Positive/negative cases
+* Validation checks
+* Auth behavior
+
+---
+
+## ♿ Accessibility Testing
+
+Using axe-core (WCAG 2.1 AA).
+
+Detected real issues:
+
+* Low color contrast
+* Missing landmarks
+* Missing H1
+
+⚠️ Important:
+
+Accessibility violations are **reported but not blocking CI**,
+as they originate from the provided challenge HTML.
+
+---
+
+## ⚡ Performance Testing
+
+Measured flows:
+
+* Page load
+* Login
+
+| Metric | Target | Status      |
+| ------ | ------ | ----------- |
+| Load   | <2s    | ✅           |
+| Login  | <3s    | ⚠️ variable |
+
+⚠️ Notes:
+
+* CI environments are noisy
+* Tests run weekly and are non-blocking
+* Intended for trend monitoring, not strict gating
+
+---
+
+## 🔍 Observability & Debugging
+
+On every failure:
+
+* 📸 Screenshot
+* 🎥 Video
+* 🔍 Playwright trace
+* 📝 Console logs
+
+This significantly reduces time to identify root cause.
+
+---
+
+## 🐳 Docker Support
+
+```bash
+docker build -t playwright-tests .
+docker run --rm playwright-tests
+```
+
+Ensures consistency between local and CI environments.
+
+---
+
+## 📊 Reporting (Allure)
+
+```bash
+npm run allure:report
+```
+
+Includes:
+
+* Execution timeline
+* Failure artifacts
+* Historical trends (if enabled)
+
+---
+
+## 🔧 Environment Configuration
+
+```bash
+npm run test:dev
+npm run test:staging
+npm run test:prod
+```
+
+Uses `.env.*` files.
+
+Secrets should be stored in CI (e.g., GitHub Secrets).
 
 ---
 
 ## 📁 Project Structure
 
 ```
-anaconda-qa-assessment/
-│
-├── .github/workflows/
-│   ├── smoke.yml
-│   └── regression.yml
-│
-├── src/
-│   ├── pages/
-│   │   ├── BasePage.ts
-│   │   ├── Challenge1Page.ts
-│   │   ├── Challenge2Page.ts
-│   │   ├── Challenge3Page.ts
-│   │   └── Challenge4Page.ts
-│   │
-│   └── utils/
-│       ├── waitHelpers.ts
-│       └── testDataFactory.ts
-│
-├── tests/
-│   ├── smoke/
-│   └── regression/
-│
-├── public/
-│   ├── challenge1.html
-│   ├── challenge2.html
-│   ├── challenge3.html
-│   └── challenge4.html
-│
-├── playwright.config.ts
-├── tsconfig.json
-├── package.json
-├── server.js
-└── README.md
+src/
+  pages/
+  utils/
+
+tests/
+  api/
+  smoke/
+  regression/
+  accessibility/
+  performance/
 ```
 
 ---
@@ -191,68 +263,62 @@ anaconda-qa-assessment/
 ## 🚀 Quick Start
 
 ```bash
-# Clone
 git clone https://github.com/GitHubMaster07/anaconda-qa-assessment.git
 cd anaconda-qa-assessment
 
-# Install
 npm install
 npx playwright install
 
-# Run smoke tests
 npm run test:smoke
-
-# Run regression tests
-npm run test:regression
 ```
 
 ---
 
 ## 🧪 Test Results
 
-| Suite | Tests | Status |
-|-------|-------|--------|
-| Smoke | 8 | ✅ All passing |
-| Regression | 28 | ✅ All passing |
-| **Total** | **36** | ✅ **All passing** |
-| CI/CD | - | ✅ Green |
+| Suite              | Status               |
+| ------------------ | -------------------- |
+| Core (52 tests)    | ✅ Stable             |
+| Accessibility (10) | ⚠️ Issues detected   |
+| Performance (4)    | ⚠️ Non-deterministic |
 
 ---
 
 ## 🔄 CI/CD Pipelines
 
-| Pipeline | Trigger | Duration |
-|----------|---------|----------|
-| Smoke | Every push/PR | ~2 min |
-| Regression | Nightly (3 AM) | ~1.5 min |
+| Pipeline    | Trigger | Blocking |
+| ----------- | ------- | -------- |
+| Smoke       | PR      | ✅        |
+| Regression  | Nightly | ⚠️       |
+| Performance | Weekly  | ❌        |
 
 ---
 
-## 📊 Test Commands
+## ⚠️ Limitations & Trade-offs
 
-```bash
-npm run test:smoke      # Fast critical path
-npm run test:regression # Full test suite
-npm run test:headed     # With browser UI
-npm run test:debug      # Debug mode
-```
+* Some DOM attributes were added to improve testability (demo purpose)
+* No test data cleanup (acceptable for isolated test environment)
+* No contract testing (API schema validation not included)
+* Limited security testing (no rate-limit / token edge cases)
+* No historical performance tracking (only snapshot checks)
 
 ---
 
 ## 🔮 Future Improvements
 
-- Replace remaining CSS selectors with `getByRole` for better resilience  
-- Add API tests for backend validation  
-- Implement visual regression testing with Percy  
-- Add load testing with Locust  
-- Generate Allure reports for better analytics  
+* Add contract testing (schema validation)
+* Introduce test data cleanup via API
+* Expand API coverage (reduce UI dependency)
+* Add visual regression testing
+* Add flaky test tracking metrics
+* Integrate notifications (Slack, etc.)
 
 ---
 
 ## 👤 Author
 
-**Sergey Volodin**  
-GitHub: https://github.com/GitHubMaster07  
+Sergey Volodin
+GitHub: GitHubMaster07
 
 ---
 

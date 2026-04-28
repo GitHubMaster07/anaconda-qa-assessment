@@ -13,6 +13,7 @@
     "test:prod": "ENV=production playwright test && npm run allure:report",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
+    "test:security": "playwright test tests/api/security.spec.ts --grep @security",
     "test:with-server": "start npm start && wait-on http://localhost:3000 && npm run test:smoke",
     "allure:generate": "allure generate allure-results --clean -o allure-report",
     "allure:open": "allure open allure-report",

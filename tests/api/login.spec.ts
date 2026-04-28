@@ -1,9 +1,22 @@
 import { test, expect } from '@playwright/test';
 import { loginSuccessSchema, errorResponseSchema } from './schemas/login.schema';
+import { CleanupHelper } from '../../src/utils/cleanupHelper';
 
 test.describe('Login API @smoke @regression', () => {
+  let createdEmail: string | null = null;
+
+  test.afterEach(async ({ request }) => {
+    if (createdEmail) {
+      await CleanupHelper.cleanupAll(request);
+      createdEmail = null;
+    }
+  });
 
   test('POST /login - valid credentials', async ({ request }) => {
+    const email = 'user@example.com';
+    createdEmail = email;
+    CleanupHelper.trackEmail(email);
+
     const response = await request.post('/api/login', {
       data: {
         email: 'user@example.com',
@@ -25,6 +38,10 @@ test.describe('Login API @smoke @regression', () => {
   });
 
   test('POST /login - invalid password', async ({ request }) => {
+    const email = 'user@example.com';
+    createdEmail = email;
+    CleanupHelper.trackEmail(email);
+
     const response = await request.post('/api/login', {
       data: {
         email: 'user@example.com',

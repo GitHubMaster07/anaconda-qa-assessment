@@ -19,26 +19,29 @@ export class Challenge2Page extends BasePage {
   };
 
   async navigateToChallenge(): Promise<void> {
-    await this.page.locator('a[href="/challenge2.html"]').click();
+    await this.page.getByRole('link', { name: 'Challenge 2' }).click();
   }
 
   async loginSuccess(email: string, password: string): Promise<void> {
     await this.page.fill(this.selectors.emailInput, email);
     await this.page.fill(this.selectors.passwordInput, password);
     await this.page.click(this.selectors.submitButton);
-    
+
     const errorMessage = this.page.locator(this.selectors.errorMessage);
-    
+    const dashboard = this.page.locator(this.selectors.dashboard);
+
+    // Wait for either success or error
     await Promise.race([
-      this.page.locator(this.selectors.dashboard).waitFor({ state: 'visible' }),
+      dashboard.waitFor({ state: 'visible' }),
       errorMessage.waitFor({ state: 'visible' })
     ]);
-    
+
     if (await errorMessage.isVisible()) {
       const errorText = await errorMessage.textContent();
       throw new Error(`Login failed: ${errorText}`);
     }
-    
+
+    // Wait for menu to be ready (data-initialized attribute from original HTML)
     await this.page.waitForSelector('#menuButton[data-initialized="true"]');
   }
 
@@ -56,14 +59,19 @@ export class Challenge2Page extends BasePage {
 
   async logout(): Promise<void> {
     const menuButton = this.page.locator(this.selectors.menuButton);
-    await menuButton.click();
-    
-    await this.page.waitForSelector('#accountMenu.show');
-    
-    const logoutOption = this.page.locator(this.selectors.logoutOption);
-    await logoutOption.click();
-    
-    await this.page.waitForSelector(this.selectors.loginForm, { state: 'visible' });
+    const accountMenu = this.page.locator(this.selectors.accountMenu);
+
+    // Click menu and wait for it to open
+    await Promise.all([
+      accountMenu.waitFor({ state: 'visible' }),
+      menuButton.click()
+    ]);
+
+    // Click logout
+    await this.page.locator(this.selectors.logoutOption).click();
+
+    // Verify return to login form
+    await expect(this.page.locator(this.selectors.loginForm)).toBeVisible();
     await expect(this.page.locator(this.selectors.emailInput)).toBeVisible();
   }
 

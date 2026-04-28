@@ -4,7 +4,7 @@
 [![Regression Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/regression.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/regression.yml)
 [![Performance Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/performance.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/performance.yml)
 
-![Tests](https://img.shields.io/badge/tests-80_total-brightgreen)
+![Tests](https://img.shields.io/badge/tests-88_total-brightgreen)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
 
 ---
@@ -88,7 +88,6 @@ Reduced flakiness and improved execution speed.
 
 ### Explicit Readiness Signals
 
-* `data-test-ready`
 * `window.isAppReady`
 
 ⚠️ **Note:** Added for demonstration purposes.
@@ -124,7 +123,7 @@ In real production systems, alternatives would include network-based synchroniza
 ### Retry Policy
 
 ```ts
-retries: 1 // CI only
+retries: 1 # compensates for transient CI issues (animations, network, etc.)
 ```
 
 ---
@@ -363,7 +362,7 @@ npm run test:smoke
 
 ## ⚠️ Limitations & Trade-offs
 
-* Some DOM attributes added for testability (demo purpose)
+* Original app uses data-initialized (Challenge 2) as an indicator of UI readiness; no test-only hooks were added.
 * Cleanup is simulated (no real API delete)
 * Security tests are non-blocking
 * Performance tests are environment-dependent

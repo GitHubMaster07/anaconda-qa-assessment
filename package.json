@@ -22,7 +22,9 @@
     "flaky:report": "node scripts/analyze-flaky.js",
     "docker:build": "docker build -t playwright-tests .",
     "docker:test": "docker run --rm playwright-tests",
-    "docker:smoke": "docker run --rm playwright-tests npm run test:smoke"
+    "docker:smoke": "docker run --rm playwright-tests npm run test:smoke",
+    "metrics:collect": "node scripts/collect-metrics.js",
+    "test:with-metrics": "playwright test && npm run metrics:collect"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.2",

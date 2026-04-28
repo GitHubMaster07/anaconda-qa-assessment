@@ -1,0 +1,43 @@
+name: Metrics Tracking
+
+on:
+  schedule:
+    - cron: '0 1 * * 1'  # Every Monday at 1 AM
+  workflow_dispatch:
+
+jobs:
+  metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests with metrics
+        run: npm run test:with-metrics
+        continue-on-error: true
+      
+      - name: Upload metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: metrics-report
+          path: metrics.json
+          retention-days: 90
+      
+      - name: Generate trend report
+        run: |
+          echo "## 📊 Weekly Test Metrics" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Last Run | 5-Week Avg |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|----------|------------|" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f "metrics.json" ]; then
+            echo "✅ Metrics collected successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ No metrics data available" >> $GITHUB_STEP_SUMMARY
+          fi

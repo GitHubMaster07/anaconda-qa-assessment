@@ -16,7 +16,6 @@ export class Challenge1Page extends BasePage {
   };
 
   async navigateToChallenge(): Promise<void> {
-    // Using role-based locator instead of href attribute - more resilient
     await this.page.getByRole('link', { name: 'Challenge 1' }).click();
   }
 
@@ -27,16 +26,19 @@ export class Challenge1Page extends BasePage {
   }
 
   async verifyLoginSuccess(email: string, password: string): Promise<void> {
-    await this.page.waitForSelector('#successMessage[data-test-ready="true"]');
+    // Wait for success message to become visible (user sees it)
+    await expect(this.page.locator(this.selectors.successMessage)).toBeVisible();
     
     const emailDisplay = this.page.locator(this.selectors.emailDisplay);
     const passwordDisplay = this.page.locator(this.selectors.passwordDisplay);
     
+    // Verify displayed data matches what user submitted
     await expect(emailDisplay).toHaveText(`Email: ${email}`);
     await expect(passwordDisplay).toHaveText(`Password: ${password}`);
   }
 
   async waitForFormReset(): Promise<void> {
-    await this.page.waitForSelector('#successMessage[data-test-ready="true"]', { state: 'detached' });
+    // Wait for success message to disappear before next login attempt
+    await expect(this.page.locator(this.selectors.successMessage)).toBeHidden();
   }
 }

@@ -233,13 +233,9 @@
         emailDisplay.textContent = `Email: ${emailValue}`;
         passwordDisplay.textContent = `Password: ${passwordValue}`;
         successMessage.classList.add('show');
-        
-        // Signal to test that animation is complete and data is ready
-        successMessage.setAttribute('data-test-ready', 'true');
 
         setTimeout(() => {
           successMessage.classList.remove('show');
-          successMessage.removeAttribute('data-test-ready');
           form.reset();
 
           const inputs = form.querySelectorAll('input');

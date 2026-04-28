@@ -1,9 +1,3 @@
-# 🎯 Anaconda QA Assessment
-
-[![Smoke Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/smoke.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/smoke.yml)
-[![Regression Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/regression.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/regression.yml)
-[![Tests](https://img.shields.io/badge/tests-52%20passing-brightgreen)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue)](https://www.typescriptlang.org/)
 
 # 🎯 Anaconda QA Assessment
 
@@ -11,7 +5,7 @@
 [![Regression Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/regression.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/regression.yml)
 [![Performance Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/performance.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/performance.yml)
 
-![Tests](https://img.shields.io/badge/tests-74_total-brightgreen)
+![Tests](https://img.shields.io/badge/tests-52_total-brightgreen)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
 
 ---

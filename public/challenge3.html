@@ -151,6 +151,7 @@
   <body>
     <div class="form-container">
       <div id="mainContent">
+        <!-- Initial Login Form -->
         <form id="mainForm">
           <h2 class="form-title">Login</h2>
           <div class="input-group">
@@ -204,7 +205,7 @@
 
       function showSuccess(message) {
         mainContent.innerHTML = `
-                <div class="success-message" data-test-ready="true">
+                <div class="success-message">
                     <h3>Success!</h3>
                     ${message}
                     <button class="submit-btn" onclick="showLogin()">Close</button>
@@ -213,21 +214,23 @@
       }
 
       function showForgotPassword() {
-        mainContent.innerHTML = forgotPasswordHTML;
-        setupFormListeners();
+        setTimeout(() => {
+          mainContent.innerHTML = forgotPasswordHTML;
+          setupFormListeners();
+        }, 100); // Changed to 1 second
       }
 
       function showLogin() {
-        mainContent.innerHTML = loginHTML;
-        setupFormListeners();
+        setTimeout(() => {
+          mainContent.innerHTML = loginHTML;
+          setupFormListeners();
+        }, 100); // Changed to 1 second
       }
 
       function setupFormListeners() {
         const form = document.getElementById('mainForm');
         const emailInput = document.getElementById('email');
         const emailError = document.getElementById('emailError');
-
-        if (!form) return;
 
         form.addEventListener('submit', e => {
           e.preventDefault();
@@ -257,11 +260,13 @@
           }
         });
 
+        // Clear error on input
         emailInput.addEventListener('input', () => {
-          if (emailError) emailError.classList.remove('show');
+          emailError.classList.remove('show');
         });
       }
 
+      // Setup initial form listeners
       setupFormListeners();
     </script>
   </body>

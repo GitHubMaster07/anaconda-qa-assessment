@@ -19,6 +19,7 @@
     "allure:report": "npm run allure:generate && npm run allure:open"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.2",
     "@playwright/test": "^1.42.1",
     "@types/node": "^20.11.24",
     "allure-playwright": "^2.15.1",

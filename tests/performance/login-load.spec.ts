@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { flakyTest } from '../helpers/flakyHelper';
 
 test.describe('Performance smoke tests @performance', () => {
 
@@ -12,8 +11,7 @@ test.describe('Performance smoke tests @performance', () => {
     expect(loadTime).toBeLessThan(2000);
   });
 
-  // Mark as flaky - uses special flakyTest helper
-  flakyTest('Login action should complete under 3 seconds', async ({ page }) => {
+  test('Login action should complete under 3 seconds', async ({ page }) => {
     await page.goto('/challenge1.html');
     
     const startTime = Date.now();
@@ -25,6 +23,6 @@ test.describe('Performance smoke tests @performance', () => {
     const actionTime = Date.now() - startTime;
     console.log(`Login action completed in ${actionTime}ms`);
     expect(actionTime).toBeLessThan(3000);
-  }, { maxRetries: 2 });
+  });
 
 });

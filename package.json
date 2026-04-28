@@ -16,7 +16,10 @@
     "test:with-server": "start npm start && wait-on http://localhost:3000 && npm run test:smoke",
     "allure:generate": "allure generate allure-results --clean -o allure-report",
     "allure:open": "allure open allure-report",
-    "allure:report": "npm run allure:generate && npm run allure:open"
+    "allure:report": "npm run allure:generate && npm run allure:open",
+    "docker:build": "docker build -t playwright-tests .",
+    "docker:test": "docker run --rm playwright-tests",
+    "docker:smoke": "docker run --rm playwright-tests npm run test:smoke"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.2",

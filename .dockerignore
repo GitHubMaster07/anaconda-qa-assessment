@@ -1,0 +1,12 @@
+node_modules
+test-results
+playwright-report
+allure-results
+allure-report
+reports
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+*.log

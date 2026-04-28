@@ -38,6 +38,9 @@ export default defineConfig({
     },
   ],
 
+  // Global teardown for test data cleanup
+  globalTeardown: './src/config/globalTeardown.ts',
+
   // Start local dev server only when running tests locally
   webServer: process.env.CI
     ? undefined

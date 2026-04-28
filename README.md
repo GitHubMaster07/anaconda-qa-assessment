@@ -112,7 +112,7 @@ In real production systems, alternatives would include network-based synchroniza
 
 ### Test Pyramid (Current)
 
-* API: 16 tests
+* API: 30 tests
 * UI: 44 tests
 * Other: 14 tests
 
@@ -123,7 +123,7 @@ In real production systems, alternatives would include network-based synchroniza
 ### Retry Policy
 
 ```ts
-retries: 1 # compensates for transient CI issues (animations, network, etc.)
+retries: 1 # Retries are a safety net, not a solution. Root causes were addressed via proper waits and state control.
 ```
 
 ---
@@ -362,7 +362,7 @@ npm run test:smoke
 
 ## ⚠️ Limitations & Trade-offs
 
-* Original app uses data-initialized (Challenge 2) as an indicator of UI readiness; no test-only hooks were added.
+* Used existing application signals instead of introducing test-only hooks.
 * Cleanup is simulated (no real API delete)
 * Security tests are non-blocking
 * Performance tests are environment-dependent

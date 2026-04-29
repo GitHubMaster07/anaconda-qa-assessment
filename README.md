@@ -208,7 +208,7 @@ Security tests validate:
 
 ### ♿ Accessibility Testing (Important Context)
 
-Accessibility tests are expected to fail.
+Accessibility tests are non-blocking and used for reporting puposes only.
 
 This is intentional — the provided application contains real WCAG violations:
 

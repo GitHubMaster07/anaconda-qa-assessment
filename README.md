@@ -33,7 +33,19 @@ The original challenge application has several limitations:
 - Showing **how to detect and report quality issues**, not just pass tests
 
 ⚠️ Important:
-Some tests are intentionally failing to highlight real issues in the application.
+Some tests intentionally surface real application defects.
+These are not failures of the framework — they are failures of the application under test.
+
+## How I solved Challenges 1–4
+- C1: fixed race conditions by waiting for form reset; added data validation
+
+- C2: handled animations with state‑based waits; validated login/logout
+
+- C3: synchronized async UI; added API + contract validation
+
+- C4: used global readiness flag; stabilized global state flow
+
+---
 
 ## 🚀 TL;DR (for reviewers)
 
@@ -42,8 +54,9 @@ Some tests are intentionally failing to highlight real issues in the application
 * ✅ CI pipelines (smoke / regression / performance)
 * ✅ UI + API + Accessibility + Performance + Security coverage
 * ✅ Contract testing (Zod schemas)
-* ⚠️ Accessibility issues intentionally exposed (not hidden)
-* ⚠️ Performance tests are non-deterministic → non-blocking
+* ⚠️ Accessibility issues intentionally exposed (this demonstrates the ability to detect and report WCAG violations, not just automate UI flows)
+* ⚠️ Performance tests are trend‑based and non‑blocking by design
+They are used to detect regressions, not enforce strict thresholds in CI
 
 ---
 
@@ -165,7 +178,7 @@ In a real project, this would remove records via API/database.
 
 ## 🔌 API Testing
 
-16 API tests covering backend validation with **contract testing**:
+30 API tests covering backend validation with **contract testing**:
 
 | Endpoint                  | Tests | Contract Validation           |
 | ------------------------- | ----- | ----------------------------- |

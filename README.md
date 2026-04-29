@@ -34,7 +34,7 @@ The original challenge application has several limitations:
 
 ⚠️ Important:
 Some tests intentionally surface real application defects.
-These are not failures of the framework — they are failures of the application under test.
+Failures highlight issues in application under test.
 
 ## How I solved Challenges 1–4
 - C1: fixed race conditions by waiting for form reset; added data validation
@@ -220,7 +220,7 @@ Security tests validate:
 
 ### ♿ Accessibility Testing (Important Context)
 
-Accessibility tests are non-blocking and used for reporting puposes only.
+Failing due to application defects; would block in production context.
 
 This is intentional — the provided application contains real WCAG violations:
 

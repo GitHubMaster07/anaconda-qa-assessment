@@ -17,6 +17,24 @@ The goal was not just to make tests pass, but to transform a **flaky, non-scalab
 
 ---
 
+## 🎯 Scope of the Challenge
+
+The original challenge application has several limitations:
+
+- No backend API (UI-only architecture)
+- No accessibility compliance (multiple WCAG violations)
+- Non-deterministic UI behavior in some flows
+- Limited testability hooks
+
+👉 Therefore, this project focuses on:
+
+- Building a **scalable test framework**
+- Demonstrating **test architecture and patterns**
+- Showing **how to detect and report quality issues**, not just pass tests
+
+⚠️ Important:
+Some tests are intentionally failing to highlight real issues in the application.
+
 ## 🚀 TL;DR (for reviewers)
 
 * ✅ Flaky tests stabilized (removed hard waits)
@@ -188,37 +206,38 @@ Security tests validate:
 
 ---
 
-## ♿ Accessibility Testing
+### ♿ Accessibility Testing (Important Context)
 
-Using **axe-core (WCAG 2.1 AA)**.
+Accessibility tests are expected to fail.
 
-Detected real issues:
+This is intentional — the provided application contains real WCAG violations:
 
-* Low color contrast
-* Missing landmarks
-* Missing H1
+- Missing landmarks
+- No `<main>` region
+- No `<h1>` heading
+- Color contrast issues
+
+👉 The goal is to **surface these issues**, not hide them.
+
+In real production:
+- these tests would block releases
+- or be triaged with the development team
 
 ⚠️ Reported but not blocking CI (issues originate from challenge HTML).
 
 ---
 
-## ⚡ Performance Testing
+### ⚠️ Test Stability Considerations
 
-Measured flows:
+Due to limitations of the challenge app:
 
-* Page load
-* Login
+- Some flows are non-deterministic (e.g. Challenge 3)
+- Performance tests may fail in CI due to environment variability
 
-| Metric | Target | Status      |
-| ------ | ------ | ----------- |
-| Load   | <2s    | ✅           |
-| Login  | <3s    | ⚠️ variable |
-
-⚠️ Notes:
-
-* CI environments are noisy
-* Non-blocking (monitoring only)
-* Intended for trend tracking
+👉 These cases are intentionally left visible to demonstrate:
+- detection of instability
+- need for better app instrumentation
+- importance of deterministic UI signals
 
 ---
 

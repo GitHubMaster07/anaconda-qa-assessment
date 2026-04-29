@@ -4,7 +4,7 @@
 [![Regression Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/regression.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/regression.yml)
 [![Performance Tests](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/performance.yml/badge.svg)](https://github.com/GitHubMaster07/anaconda-qa-assessment/actions/workflows/performance.yml)
 
-![Tests](https://img.shields.io/badge/tests-88_total-brightgreen)
+![Tests](https://img.shields.io/badge/tests-66_total-brightgreen)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
 
 ---
@@ -44,7 +44,6 @@ Some tests are intentionally failing to highlight real issues in the application
 * ✅ Contract testing (Zod schemas)
 * ⚠️ Accessibility issues intentionally exposed (not hidden)
 * ⚠️ Performance tests are non-deterministic → non-blocking
-* ⚠️ Some testability hooks added for demo purposes (see limitations)
 
 ---
 
@@ -131,10 +130,10 @@ In real production systems, alternatives would include network-based synchroniza
 ### Test Pyramid (Current)
 
 * API: 30 tests
-* UI: 44 tests
+* UI: 22 tests
 * Other: 14 tests
 
-⚠️ UI-heavy — acceptable for demo, but API coverage should dominate in real projects.
+✅ API coverage already dominates UI — good balance for backend‑focused quality.
 
 ---
 
